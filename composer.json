@@ -1,0 +1,37 @@
+{
+    "name": "funkflute/omnipay-payeezy-direct",
+    "type": "library",
+    "description": "Payeezy Direct (First Data) driver for the Omnipay payment processing library",
+    "keywords": [
+        "first data",
+        "firstdata",
+        "payeezy",
+        "payeezy direct",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment"
+    ],
+    "homepage": "https://github.com/funkflute/omnipay-payeezy-direct",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "John Hopper",
+            "email": "jazzflute@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Omnipay\\PayeezyDirect\\" : "src/" }
+    },
+    "require": {
+        "omnipay/common": "~2.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "~2.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}
