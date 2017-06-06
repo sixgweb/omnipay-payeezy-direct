@@ -52,8 +52,6 @@ class Response extends AbstractResponse
         return $this->getDataItem('transaction_tag');
     }
 
-
-
     public function getMessage()
     {
         return $this->getDataItem('Error')->messages[0]->description;
@@ -67,5 +65,9 @@ class Response extends AbstractResponse
     public function getCode()
     {
         return $this->getDataItem('Error')->messages[0]->code;
+    }
+
+    public function getCardReference() {
+        return isset($this->data->token->token_data->value) ? $this->data->token->token_data->value : null;
     }
 }

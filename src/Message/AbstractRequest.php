@@ -25,6 +25,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /** @var string test endpoint URL base */
     protected $testEndpoint = 'https://api-cert.payeezy.com/';
 
+    /** @var string endpoint resource */
+    protected $resource = 'transactions';
+
     /** @var int api transaction type */
     protected $transactionType;
 
@@ -259,8 +262,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         }
 
-
-
         return $this->createResponse($httpResponse->getBody());
     }
 
@@ -271,7 +272,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function getEndpoint()
     {
-        return ($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . self::API_VERSION . '/transactions';
+        return ($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . self::API_VERSION . '/' . $this->resource;
     }
 
     /**
@@ -286,12 +287,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->response = new Response($this, $data);
     }
 
-    /**
-     * Validates and returns the formated amount.
-     *
-     * @throws InvalidRequestException on any validation failure.
-     * @return string The amount formatted to the correct number of decimal places for the selected currency.
-     */
     public function getSubmitAmount()
     {
         return number_format(parent::getAmount(), 2, '', '');

@@ -169,4 +169,9 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\PayeezyDirect\Message\VoidRequest', $parameters);
     }
+
+    public function createCard(array $parameters = [])
+    {
+        return $this->createRequest('\Omnipay\PayeezyDirect\Message\CreateCardRequest', $parameters);
+    }
 }

@@ -49,10 +49,10 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
     public function testAuthorizeSuccess()
     {
-        // $this->setMockHttpResponse('AuthorizeSuccess.txt');
-		// $response = $this->gateway->authorize($this->options)->send();
-        // $this->assertTrue($response->isSuccessful());
-        // $this->assertEquals('ET181147::28513493', $response->getTransactionReference());
+        $this->setMockHttpResponse('AuthorizeSuccess.txt');
+		$response = $this->gateway->authorize($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+        $this->assertEquals('ET153636:156306794', $response->getTransactionReference());
     }
 
     public function testVoidSuccess()
@@ -64,6 +64,15 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 		$response = $this->gateway->void($options)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('ET171025:156304361', $response->getTransactionReference());
+    }
+
+    public function testCreateCardSuccess()
+    {
+        $this->setMockHttpResponse('CreateCardSuccess.txt');
+		$response = $this->gateway->createCard($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
+        $this->assertEquals('ET143165:156310751', $response->getTransactionReference());
+        $this->assertEquals('1033081934821111', $response->getCardReference());
     }
 
     /**

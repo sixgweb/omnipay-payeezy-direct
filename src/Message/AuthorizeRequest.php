@@ -10,5 +10,5 @@ namespace Omnipay\PayeezyDirect\Message;
  */
 class AuthorizeRequest extends PurchaseRequest
 {
-    protected $action = self::TRAN_PREAUTH;
+    protected $transactionType = self::TRAN_PREAUTH;
 }
