@@ -33,7 +33,7 @@ class PurchaseRequest extends AbstractRequest
             'type'            => $this->getCard()->getBrand(),
             'cardholder_name' => $this->getCard()->getName(),
             'card_number'     => $this->getCard()->getNumber(),
-            'exp_date'        => $this->getCard()->getExpiryDate('m') . $this->getCard()->getExpiryDate('y'),
+            'exp_date'        => $this->getCard()->getExpiryDate('my'),
             'cvv'             => $this->getCard()->getCvv()
         ];
 
@@ -45,7 +45,6 @@ class PurchaseRequest extends AbstractRequest
             'state_province'  => $this->getCard()->getBillingState(),
             'zip_postal_code' => $this->getCard()->getBillingPostcode(),
             'phone'           => [
-                // 'type'   => '',
                 'number' => $this->getCard()->getBillingPhone()
             ],
         ];
