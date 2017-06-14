@@ -4,12 +4,14 @@
  */
 
 namespace Omnipay\PayeezyDirect\Message;
-
+use Omnipay\PayeezyDirect\GetterSetterTrait;
 /**
  * First Data Payeezy Abstract Request
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
+    use GetterSetterTrait;
+
     /** @var string Method used to calculate the hmac strings. */
     const METHOD_POST = 'POST';
 
@@ -19,20 +21,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /** API version to use. */
     const API_VERSION = 1;
 
-    /** @var string live endpoint URL base */
-    protected $live_endpoint = 'https://api.payeezy.com/';
-
-    /** @var string test endpoint URL base */
-    protected $test_endpoint = 'https://api-cert.payeezy.com/';
-
     /** @var string endpoint resource */
     protected $resource = 'transactions';
 
     /** @var int api transaction type */
     protected $transaction_type;
-
-    /** @var string id to reverse the transaction on timeout */
-    protected $reversal_id;
 
     // Transaction types
     const TRAN_PURCHASE                 = 'purchase';
@@ -62,120 +55,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         'diners_club' => 'Diners Club',
         'jcb'         => 'JCB',
     );
-
-    /**
-     * Get API Key
-     *
-     * @return string
-     */
-    public function getApiKey()
-    {
-        return $this->getParameter('apiKey');
-    }
-
-    /**
-     * Set API Key
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setApiKey($value)
-    {
-        return $this->setParameter('apiKey', $value);
-    }
-
-    /**
-     * Get API Key
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return string
-     */
-    public function getApiSecret()
-    {
-        return $this->getParameter('apiSecret');
-    }
-
-    /**
-     * Set Password
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setApiSecret($value)
-    {
-        return $this->setParameter('apiSecret', $value);
-    }
-
-    /**
-     * Get Merchant Token
-     *
-     * @return string
-     */
-    public function getMerchantToken()
-    {
-        return $this->getParameter('merchantToken');
-    }
-
-    /**
-     * Set Merchant Token
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setMerchantToken($value)
-    {
-        return $this->setParameter('merchantToken', $value);
-    }
-
-    /**
-     * Get Hmac
-     *
-     * @return string
-     */
-    public function getTransArmorToken()
-    {
-        return $this->getParameter('transArmorToken');
-    }
-
-    /**
-     * Set TransArmorToken
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setTransArmorToken($value)
-    {
-        return $this->setParameter('transArmorToken', $value);
-    }
-
-    /**
-     * Set transaction type
-     *
-     * @param int $transaction_type
-     *
-     * @return AbstractRequest provides a fluent interface.
-     */
-    public function setTransactionType($transaction_type)
-    {
-        $this->setParameter('transaction_type',  $transaction_type);
-    }
-
-    /**
-     * Get transaction type
-     *
-     * @return int
-     */
-    public function getTransactionType()
-    {
-        return $this->transaction_type;
-    }
-
-
-    public function getReversalId()
-    {
-        return $this->reversal_id ?: $this->reversal_id = 'Re-txn-' . md5(time());
-    }
 
     /**
      * Get the transaction headers.
@@ -214,7 +93,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return [
 			'transaction_type' => $this->transaction_type,
-			'reversal_id'      => $this->getReversalId(),
 		];
     }
 
@@ -260,10 +138,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $client->setBody($data, $headers['Content-Type']);
         $client->getCurlOptions()->set(CURLOPT_PORT, 443);
         $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
+        file_put_contents("request_$this->transaction_type", $client);
 
         try {
             $httpResponse = $client->send();
-            // file_put_contents('response.' . time(), $httpResponse);
+            file_put_contents("response_$this->transaction_type", $httpResponse);
 
         } catch (\Exception $e) {
             echo($e->getCode() . ' - ' . $e->getMessage() . '- - - - ' . PHP_EOL);
@@ -281,7 +160,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function getEndpoint()
     {
-        return ($this->getTestMode() ? $this->test_endpoint : $this->live_endpoint) . 'v' . self::API_VERSION . '/' . $this->resource;
+        return 'https://' . $this->getEnvironment() . '.payeezy.com/v' . self::API_VERSION . '/' . $this->resource;
     }
 
     /**
@@ -303,11 +182,20 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function getTransactionId()
     {
-        return explode(':', $this->getTransactionReference())[0];
+        $ref = $this->getTransactionReference();
+        return $ref ? explode(':', $this->getTransactionReference())[0] : null;
     }
 
     public function getTransactionTag()
     {
-        return explode(':', $this->getTransactionReference())[1];
+        $ref = $this->getTransactionReference();
+        return $ref ? explode(':', $this->getTransactionReference())[1] : null;
+    }
+
+    // get method for payeezy
+    public function getPaymentMethod()
+    {
+        $method = parent::getPaymentMethod();
+        return $method == 'card' ? 'credit_card' : $method;
     }
 }

@@ -8,6 +8,8 @@ use Omnipay\Common\AbstractGateway;
 
 class Gateway extends AbstractGateway
 {
+    use GetterSetterTrait;
+
     public function getName()
     {
         return 'Payeezy Direct';
@@ -17,102 +19,11 @@ class Gateway extends AbstractGateway
     {
         return array(
             'apiKey'          => '',
-            'apiSecret'       => '',
-            'merchantToken'   => '',
-            'transArmorToken' => '',
+            'api_secret'       => '',
+            'merchant_token'   => '',
+            'transarmor_token' => '',
             'testMode'        => false,
         );
-    }
-
-    /**
-     * Get API Key
-     *
-     * @return string
-     */
-    public function getApiKey()
-    {
-        return $this->getParameter('apiKey');
-    }
-
-    /**
-     * Set API Key
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setApiKey($value)
-    {
-        return $this->setParameter('apiKey', $value);
-    }
-
-    /**
-     * Get API Key
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return string
-     */
-    public function getApiSecret()
-    {
-        return $this->getParameter('apiSecret');
-    }
-
-    /**
-     * Set Password
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setApiSecret($value)
-    {
-        return $this->setParameter('apiSecret', $value);
-    }
-
-    /**
-     * Get Merchant Token
-     *
-     * @return string
-     */
-    public function getMerchantToken()
-    {
-        return $this->getParameter('merchantToken');
-    }
-
-    /**
-     * Set Merchant Token
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setMerchantToken($value)
-    {
-        return $this->setParameter('merchantToken', $value);
-    }
-
-    /**
-     * Get Hmac
-     *
-     * @return string
-     */
-    public function getTransArmorToken()
-    {
-        return $this->getParameter('transArmorToken');
-    }
-
-    /**
-     * Set TransArmorToken
-     *
-     * @return PayeezyDirect provides a fluent interface.
-     */
-    public function setTransArmorToken($value)
-    {
-        return $this->setParameter('transArmorToken', $value);
-    }
-
-    public function getPaymentMethod()
-    {
-        return $this->getParameter('payment_method');
     }
 
     /**

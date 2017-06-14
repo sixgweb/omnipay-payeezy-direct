@@ -63,6 +63,11 @@ class PurchaseRequest extends AbstractRequest
             ],
         ];
 
+        // add reversal id for timeout voids
+        if ($this->getReversalId()) {
+            $data['reversal_id'] = $this->getReversalId();
+        }
+
         return json_encode($data, JSON_FORCE_OBJECT);
     }
 

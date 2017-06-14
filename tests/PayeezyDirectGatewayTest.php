@@ -22,6 +22,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->gateway->setApiSecret('86fbae7030253af3cd15faef2a1f4b67353e41fb6799f576b5093ae52901e6f7');
         $this->gateway->setMerchantToken('fdoa-a480ce8951daa73262734cf102641994c1e55e7cdf4c02b6');
         $this->gateway->setTransArmorToken('NOIW');
+        // $this->gateway->setEnvironment('api-cert'); // some functions only work in cert environment
 
         $this->options = [
             'testMode'       => true,
@@ -66,6 +67,18 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 		$response = $this->gateway->authorize($this->options)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('ET153636:156306794', $response->getTransactionReference());
+    }
+
+    public function testTimeoutVoidSuccess()
+    {
+        // set / get reversal id
+        $reversal_id = "Re-txn-" . md5($this->gateway->getApiKey() . microtime(1));
+        $this->gateway->setReversalId($reversal_id);
+        $this->assertEquals($reversal_id, $this->gateway->getReversalId());
+        // try to void without response
+        $this->setMockHttpResponse('TimeoutVoidSuccess.txt');
+		$response = $this->gateway->void($this->options)->send();
+        $this->assertTrue($response->isSuccessful());
     }
 
     public function testVoidSuccess()
