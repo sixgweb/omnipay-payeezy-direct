@@ -1,0 +1,19 @@
+HTTP/1.1 201 Created
+Access-Control-Allow-Headers: Content-Type, apikey, token
+Access-Control-Allow-Methods: GET, PUT, POST, DELETE
+Access-Control-Allow-Origin: http://localhost:8080
+Access-Control-Max-Age: 3628800
+Access-Control-Request-Headers: origin, x-requested-with, accept, content-type
+Content-Language: en-US
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 06 Jun 2017 04:34:55 GMT
+Server: Apigee Router
+X-Archived-Client-IP: 10.180.205.250
+X-Backside-Transport: OK OK,OK OK
+X-Client-IP: 10.180.205.250,107.23.55.229
+X-Global-Transaction-ID: 1587724273
+X-Powered-By: Servlet/3.0
+Content-Length: 546
+Connection: keep-alive
+
+{"correlation_id":"228.9672369493615","transaction_status":"approved","validation_status":"success","transaction_type":"authorize","transaction_id":"ET143165","transaction_tag":"156310751","method":"credit_card","amount":"0","currency":"USD","avs":"1","cvv2":"M","token":{"token_type":"FDToken","token_data":{"value":"1033081934821111"}},"card":{"type":"visa","cardholder_name":"Example User","card_number":"1111","exp_date":"1119"},"bank_resp_code":"100","bank_message":"Approved","gateway_resp_code":"00","gateway_message":"Transaction Normal"}

@@ -27,15 +27,30 @@ class PurchaseRequest extends AbstractRequest
             'partial_redemption' => 'false',
         ]);
 
-        // credit card
-        $data['method'] = 'credit_card';
-        $data['credit_card'] = [
-            'type'            => $this->getCard()->getBrand(),
-            'cardholder_name' => $this->getCard()->getName(),
-            'card_number'     => $this->getCard()->getNumber(),
-            'exp_date'        => $this->getCard()->getExpiryDate('my'),
-            'cvv'             => $this->getCard()->getCvv()
-        ];
+		// common data
+		$card = [
+			'type'            => $this->getCard()->getBrand(),
+			'cardholder_name' => $this->getCard()->getName(),
+			'exp_date'        => $this->getCard()->getExpiryDate('my'),
+			'cvv'             => $this->getCard()->getCvv(),
+		];
+
+		// token
+		if ($this->getPaymentMethod() == 'token') {
+			$data['method'] = 'token';
+			$data['token'] = [
+				'token_type' => 'FDToken',
+				'token_data' => array_merge($card, [
+					'value' => $this->getCardReference(),
+				])
+			];
+		} else {
+			// credit card
+			$data['method']      = 'credit_card';
+	        $data['credit_card'] = array_merge($card, [
+				'card_number'    => $this->getCard()->getNumber(),
+	        ]);
+		}
 
         // billing address
         $data['billing_address'] = [

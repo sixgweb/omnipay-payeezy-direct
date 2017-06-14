@@ -110,6 +110,11 @@ class Gateway extends AbstractGateway
         return $this->setParameter('transArmorToken', $value);
     }
 
+    public function getPaymentMethod()
+    {
+        return $this->getParameter('payment_method');
+    }
+
     /**
      * Create a purchase request.
      *
