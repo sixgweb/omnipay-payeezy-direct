@@ -52,11 +52,6 @@ class Response extends AbstractResponse
         return $this->getDataItem('transaction_tag');
     }
 
-    public function getMessage()
-    {
-        return $this->getDataItem('Error')->messages[0]->description;
-    }
-
     /**
      * Get the error code.
      *
@@ -64,7 +59,17 @@ class Response extends AbstractResponse
      */
     public function getCode()
     {
-        return $this->getDataItem('Error')->messages[0]->code;
+        return  $this->getDataItem('code') ?: $this->getDataItem('Error')->messages[0]->code;
+    }
+
+    /**
+     * Get the error message.
+     *
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->getDataItem('message') ?: $this->getDataItem('Error')->messages[0]->description;
     }
 
     public function getCardReference() {
