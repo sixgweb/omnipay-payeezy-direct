@@ -24,10 +24,10 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->gateway->setTransArmorToken('NOIW');
 
         $this->options = [
-            'testMode' => true,
-            'amount'   => '13.12',
-            'card'     => $this->getValidCard(),
-            'currency' => 'USD',
+            'testMode'       => true,
+            'amount'         => '13.12',
+            'card'           => $this->getValidCard(),
+            'currency'       => 'USD',
             'payment_method' => 'card',
         ];
     }
@@ -53,7 +53,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->setMockHttpResponse('TokenPurchaseSuccess.txt');
         $options = array_merge($this->options, [
             'payment_method' => 'token',
-            'cardReference' => '1033081934821111',
+            'cardReference'  => '1033081934821111',
         ]);
         $response = $this->gateway->purchase($options)->send();
         $this->assertTrue($response->isSuccessful());
