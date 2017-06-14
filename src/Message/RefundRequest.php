@@ -8,7 +8,7 @@ use Omnipay\Common\Message\RequestInterface;
  */
 class RefundRequest extends AbstractRequest
 {
-    protected $transactionType = self::TRAN_TAGGEDREFUND;
+    protected $transaction_type = self::TRAN_TAGGEDREFUND;
 
     public function getData()
     {

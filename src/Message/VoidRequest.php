@@ -10,5 +10,5 @@ namespace Omnipay\PayeezyDirect\Message;
  */
 class VoidRequest extends RefundRequest
 {
-    protected $transactionType = self::TRAN_TAGGEDVOID;
+    protected $transaction_type = self::TRAN_TAGGEDVOID;
 }

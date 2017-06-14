@@ -17,19 +17,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const CONTENT_TYPE = 'application/json; charset=UTF-8';
 
     /** API version to use. */
-    const API_VERSION = 'v1';
+    const API_VERSION = 1;
 
     /** @var string live endpoint URL base */
-    protected $liveEndpoint = 'https://api.payeezy.com/';
+    protected $live_endpoint = 'https://api.payeezy.com/';
 
     /** @var string test endpoint URL base */
-    protected $testEndpoint = 'https://api-cert.payeezy.com/';
+    protected $test_endpoint = 'https://api-cert.payeezy.com/';
 
     /** @var string endpoint resource */
     protected $resource = 'transactions';
 
     /** @var int api transaction type */
-    protected $transactionType;
+    protected $transaction_type;
+
+    /** @var string id to reverse the transaction on timeout */
+    protected $reversal_id;
 
     // Transaction types
     const TRAN_PURCHASE                 = 'purchase';
@@ -149,13 +152,13 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /**
      * Set transaction type
      *
-     * @param int $transactionType
+     * @param int $transaction_type
      *
      * @return AbstractRequest provides a fluent interface.
      */
-    public function setTransactionType($transactionType)
+    public function setTransactionType($transaction_type)
     {
-        $this->setParameter('transaction_type',  $transactionType);
+        $this->setParameter('transaction_type',  $transaction_type);
     }
 
     /**
@@ -165,7 +168,13 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     public function getTransactionType()
     {
-        return $this->transactionType;
+        return $this->transaction_type;
+    }
+
+
+    public function getReversalId()
+    {
+        return $this->reversal_id ?: $this->reversal_id = 'Re-txn-' . md5(time());
     }
 
     /**
@@ -177,7 +186,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return [
             'Accept'        => 'application/json',
-            'Content-Type'  => 'application/json',
+            'Content-Type'  => self::CONTENT_TYPE,
             'apikey'        => $this->getApiKey(),
             'token'         => $this->getMerchantToken(),
         ];
@@ -204,7 +213,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function getData()
     {
         return [
-			'transaction_type' => $this->transactionType,
+			'transaction_type' => $this->transaction_type,
+			'reversal_id'      => $this->getReversalId(),
 		];
     }
 
@@ -247,18 +257,17 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $headers = array_merge($headers, $this->getAuthorizationHeaders());
 
         $client = $this->httpClient->post($endpoint, $headers);
-
         $client->setBody($data, $headers['Content-Type']);
         $client->getCurlOptions()->set(CURLOPT_PORT, 443);
         $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
 
         try {
             $httpResponse = $client->send();
+            // file_put_contents('response.' . time(), $httpResponse);
 
         } catch (\Exception $e) {
-            echo($client->getBody());
-            echo(PHP_EOL . '- - - - ' . PHP_EOL);
-            echo($client->getResponse()->getBody());
+            echo($e->getCode() . ' - ' . $e->getMessage() . '- - - - ' . PHP_EOL);
+            echo $client->getResponse(); exit;
 
         }
 
@@ -272,7 +281,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function getEndpoint()
     {
-        return ($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . self::API_VERSION . '/' . $this->resource;
+        return ($this->getTestMode() ? $this->test_endpoint : $this->live_endpoint) . 'v' . self::API_VERSION . '/' . $this->resource;
     }
 
     /**

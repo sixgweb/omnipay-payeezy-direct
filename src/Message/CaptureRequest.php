@@ -10,5 +10,5 @@ namespace Omnipay\PayeezyDirect\Message;
  */
 class CaptureRequest extends RefundRequest
 {
-    protected $transactionType = self::TRAN_TAGGEDPREAUTHCOMPLETE;
+    protected $transaction_type = self::TRAN_TAGGEDPREAUTHCOMPLETE;
 }
