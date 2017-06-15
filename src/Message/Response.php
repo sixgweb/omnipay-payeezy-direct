@@ -59,10 +59,6 @@ class Response extends AbstractResponse
      */
     public function getCode()
     {
-        // server fault
-        if ($fault = $this->getDataItem('fault')) {
-            return $fault->detail->errorcode;
-        }
         if ($code = $this->getDataItem('code')) {
             return $code;
         }
@@ -77,6 +73,10 @@ class Response extends AbstractResponse
         if ($this->getDataItem('bank_resp_code') !== '00') {
             return $this->getDataItem('bank_resp_code');
         }
+        // server fault
+        if ($fault = $this->getDataItem('fault')) {
+            return $fault->detail->errorcode;
+        }
     }
 
     /**
@@ -86,10 +86,6 @@ class Response extends AbstractResponse
      */
     public function getMessage()
     {
-        // server fault
-        if ($fault = $this->getDataItem('fault')) {
-            return $fault->faultstring;
-        }
         if ($message = $this->getDataItem('message')) {
             return $message;
         }
@@ -103,6 +99,10 @@ class Response extends AbstractResponse
         // bank error
         if ($this->getDataItem('bank_resp_code') !== '00') {
             return $this->getDataItem('bank_message');
+        }
+        // server fault
+        if ($fault = $this->getDataItem('fault')) {
+            return $fault->faultstring;
         }
     }
 
