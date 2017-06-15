@@ -59,7 +59,24 @@ class Response extends AbstractResponse
      */
     public function getCode()
     {
-        return  $this->getDataItem('code') ?: $this->getDataItem('Error')->messages[0]->code;
+        // server fault
+        if ($fault = $this->getDataItem('fault')) {
+            return $fault->detail->errorcode;
+        }
+        if ($code = $this->getDataItem('code')) {
+            return $code;
+        }
+        if ($error = $this->getDataItem('Error')) {
+            return $error->messages[0]->code;
+        }
+        // gateway error
+        if ($this->getDataItem('gateway_resp_code') !== '00') {
+            return $this->getDataItem('gateway_resp_code');
+        }
+        // bank error
+        if ($this->getDataItem('bank_resp_code') !== '00') {
+            return $this->getDataItem('bank_resp_code');
+        }
     }
 
     /**
@@ -69,7 +86,24 @@ class Response extends AbstractResponse
      */
     public function getMessage()
     {
-        return $this->getDataItem('message') ?: $this->getDataItem('Error')->messages[0]->description;
+        // server fault
+        if ($fault = $this->getDataItem('fault')) {
+            return $fault->faultstring;
+        }
+        if ($message = $this->getDataItem('message')) {
+            return $message;
+        }
+        if ($error = $this->getDataItem('Error')) {
+            return $error->messages[0]->description;
+        }
+        // gateway error
+        if ($this->getDataItem('gateway_resp_code') !== '00') {
+            return $this->getDataItem('gateway_message');
+        }
+        // bank error
+        if ($this->getDataItem('bank_resp_code') !== '00') {
+            return $this->getDataItem('bank_message');
+        }
     }
 
     public function getCardReference() {
