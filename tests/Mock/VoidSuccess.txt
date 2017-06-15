@@ -3,9 +3,7 @@ Content-Language: en-US
 Content-Type: application/json;charset=UTF-8
 Date: Tue, 06 Jun 2017 01:13:34 GMT
 Server: Apigee Router
-X-Archived-Client-IP: 10.180.205.250
 X-Backside-Transport: OK OK,OK OK
-X-Client-IP: 10.180.205.250,54.236.202.5
 X-Global-Transaction-ID: 1581824785
 X-Powered-By: Servlet/3.0
 Content-Length: 430
