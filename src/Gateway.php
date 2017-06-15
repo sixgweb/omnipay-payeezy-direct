@@ -18,11 +18,11 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return array(
-            'apiKey'          => '',
+            'api_key'          => '',
             'api_secret'       => '',
             'merchant_token'   => '',
             'transarmor_token' => '',
-            'testMode'        => false,
+            'testMode'         => false,
         );
     }
 
