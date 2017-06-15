@@ -107,7 +107,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $nonce = strval(hexdec(bin2hex(openssl_random_pseudo_bytes(4, $cstrong))));
         // time stamp in milli seconds
         $timestamp = strval(time() * 1000);
-        $data = $this->getApiKey() . $nonce . $timestamp . $this->getMerchantToken() . $this->getData();
+        $data = $this->getApiKey() . $nonce . $timestamp . $this->getMerchantToken() . json_encode($this->getData(), JSON_FORCE_OBJECT);
         // HMAC Hash in hex
         $hmac = hash_hmac('sha256', $data, $this->getApiSecret(), false);
 
@@ -127,7 +127,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     public function sendData($data)
     {
-
+        $data = json_encode($data, JSON_FORCE_OBJECT);
         $endpoint = $this->getEndpoint();
         $headers  = $this->getHeaders();
 
@@ -190,10 +190,4 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $ref ? explode(':', $this->getTransactionReference())[1] : null;
     }
 
-    // get method for payeezy
-    public function getPaymentMethod()
-    {
-        $method = parent::getPaymentMethod();
-        return $method == 'card' ? 'credit_card' : $method;
-    }
 }
