@@ -10,9 +10,15 @@ namespace Omnipay\PayeezyDirect\Message;
  */
 class CreateCardRequest extends AuthorizeRequest
 {
-    public function getSubmitAmount()
+
+    public function getData()
     {
-        return 0;
+        // tokenize a card with a $0 auth
+        $this->setAmount('0.00');
+        // method has to be card
+        $this->setPaymentMethod('card');
+        // get data
+        return parent::getData();
     }
 
 }
