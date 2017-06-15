@@ -18,39 +18,42 @@ class PurchaseRequest extends AbstractRequest
     public function getData()
     {
 
+        // make sure we have an amount and card data
         $this->validate('amount', 'card');
 
         $data = array_merge(parent::getData(), [
-            'merchant_ref'       => '',
             'amount'             => $this->getSubmitAmount(),
             'currency_code'      => $this->getCurrency(),
-            'partial_redemption' => 'false',
+            'method'             => $this->getPaymentMethod() == 'card' ? 'credit_card' : $this->getPaymentMethod(),
         ]);
 
         // common data
         $card = [
-            'type'            => $this->getCard()->getBrand(),
+            'type'            => $this->getCard()->getBrand(), // TODO: if type is token, then get brand from query
             'cardholder_name' => $this->getCard()->getName(),
             'exp_date'        => $this->getCard()->getExpiryDate('my'),
             'cvv'             => $this->getCard()->getCvv(),
         ];
 
-        // token
-        if ($this->getPaymentMethod() == 'token') {
-            $data['method'] = 'token';
-            $data['token'] = [
-                    'token_type' => 'FDToken',
-                    'token_data' => array_merge($card, [
-                    'value' => $this->getCardReference(),
-                ])
-            ];
-        } else {
+        switch ($this->getPaymentMethod()) {
             // credit card
-            $data['method'] = 'credit_card';
-            $data['credit_card'] = array_merge($card, [
-                'card_number' => $this->getCard()->getNumber(),
-            ]);
+            case 'card':
+                $this->getCard()->validate();
+                $data['credit_card'] = $card + [
+                    'card_number' => $this->getCard()->getNumber(),
+                ];
+            break;
+
+            case 'token':
+                $data['token'] = [
+                    'token_type' => 'FDToken',
+                    'token_data' => $card + [
+                        'value'  => $this->getCardReference(),
+                    ],
+                ];
+            break;
         }
+
         // billing address
         $data['billing_address'] = [
             'city'            => $this->getCard()->getBillingCity(),
@@ -68,7 +71,7 @@ class PurchaseRequest extends AbstractRequest
             $data['reversal_id'] = $this->getReversalId();
         }
 
-        return json_encode($data, JSON_FORCE_OBJECT);
+        return $data;
     }
 
 }
