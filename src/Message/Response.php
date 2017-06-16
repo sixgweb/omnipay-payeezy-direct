@@ -52,6 +52,19 @@ class Response extends AbstractResponse
         return $this->getDataItem('transaction_tag');
     }
 
+    public function getAmount()
+    {
+        return $this->getDataItem('amount') ? number_format($this->getDataItem('amount') / 100, 2) : null;
+    }
+
+    /**
+     * get token of card from purchase
+     * @return string
+     */
+    public function getCardReference() {
+        return isset($this->data->token->token_data->value) ? $this->data->token->token_data->value : null;
+    }
+
     /**
      * Get the error code.
      *
@@ -104,9 +117,5 @@ class Response extends AbstractResponse
         if ($fault = $this->getDataItem('fault')) {
             return $fault->faultstring;
         }
-    }
-
-    public function getCardReference() {
-        return isset($this->data->token->token_data->value) ? $this->data->token->token_data->value : null;
     }
 }
