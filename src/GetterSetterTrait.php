@@ -122,4 +122,24 @@ trait GetterSetterTrait
     {
         return $this->getParameter('reversal_id');
     }
+
+	public function setMerchantRef($value)
+	{
+		return $this->setParameter('merchant_ref', $value);
+	}
+
+	public function getMerchantRef()
+	{
+		return $this->getParameter('merchant_ref');
+	}
+
+	public function setTokenBrand($value)
+	{
+		return $this->setParameter('token_brand', $value);
+	}
+
+	public function getTokenBrand()
+	{
+		return $this->getParameter('token_brand');
+	}
 }

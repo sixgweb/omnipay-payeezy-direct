@@ -29,7 +29,7 @@ class PurchaseRequest extends AbstractRequest
 
         // common data
         $card = [
-            'type'            => $this->getCard()->getBrand(), // TODO: if type is token, then get brand from query
+            'type'            => $this->getCard()->getBrand() ?: $this->getTokenBrand(),
             'cardholder_name' => $this->getCard()->getName(),
             'exp_date'        => $this->getCard()->getExpiryDate('my'),
             'cvv'             => $this->getCard()->getCvv(),
