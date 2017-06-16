@@ -25,7 +25,12 @@ class PurchaseRequest extends AbstractRequest
             'amount'             => $this->getSubmitAmount(),
             'currency_code'      => $this->getCurrency(),
             'method'             => $this->getPaymentMethod() == 'card' ? 'credit_card' : $this->getPaymentMethod(),
+            'method'             => $this->getPaymentMethod() == 'card' ? 'credit_card' : $this->getPaymentMethod(),
         ]);
+
+        if ($merchant_ref = $this->getMerchantRef()) {
+            $data['merchant_ref'] = $merchant_ref;
+        }
 
         // common data
         $card = [
