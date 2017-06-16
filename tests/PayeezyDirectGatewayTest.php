@@ -91,18 +91,35 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
     public function testVoidSuccess()
     {
-        // make payment
+        // make purchase
         $options = array_merge($this->options, [
             'card'           => $this->getValidCard(),
             'paymentMethod'  => 'card',
         ]);
         $response = $this->gateway->purchase($options)->send();
-        //
+        // void purchase
         $options = array_merge($this->options, [
             'paymentMethod'  => 'card',
             'transactionReference' => $response->getTransactionReference(),
         ]);
 		$response = $this->gateway->void($options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
+    public function testAuthorizeAndCompleteSuccess()
+    {
+        // auth purchase
+        $options = array_merge($this->options, [
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+        ]);
+        $response = $this->gateway->authorize($options)->send();
+        // complete purchase
+        $options = array_merge($this->options, [
+            'paymentMethod'  => 'card',
+            'transactionReference' => $response->getTransactionReference(),
+        ]);
+		$response = $this->gateway->completePurchase($options)->send();
         $this->assertTrue($response->isSuccessful());
     }
 
