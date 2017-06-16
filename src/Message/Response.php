@@ -69,8 +69,8 @@ class Response extends AbstractResponse
         if ($this->getDataItem('gateway_resp_code') !== '00') {
             return $this->getDataItem('gateway_resp_code');
         }
-        // bank error
-        if ($this->getDataItem('bank_resp_code') !== '00') {
+        // bank error, 00 is error, 100-164 is approved
+        if ($this->getDataItem('bank_resp_code') < 100 || $this->getDataItem('bank_resp_code') > 164) {
             return $this->getDataItem('bank_resp_code');
         }
         // server fault
@@ -96,8 +96,8 @@ class Response extends AbstractResponse
         if ($this->getDataItem('gateway_resp_code') !== '00') {
             return $this->getDataItem('gateway_message');
         }
-        // bank error
-        if ($this->getDataItem('bank_resp_code') !== '00') {
+        // bank error, 00 is error, 100-164 is approved
+        if ($this->getDataItem('bank_resp_code') < 100 || $this->getDataItem('bank_resp_code') > 164) {
             return $this->getDataItem('bank_message');
         }
         // server fault
