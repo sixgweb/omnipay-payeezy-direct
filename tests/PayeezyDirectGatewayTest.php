@@ -25,11 +25,9 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         // $this->gateway->setEnvironment('api-cert'); // some functions only work in cert environment
 
         $this->options = [
-            'testMode'       => true,
-            'amount'         => '13.12',
-            'card'           => $this->getValidCard(),
-            'currency'       => 'USD',
-            'paymentMethod'  => 'card',
+            'testMode' => true,
+            'amount'   => '13.12',
+            'currency' => 'USD',
         ];
     }
 
@@ -44,33 +42,48 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
     public function testPurchaseSuccess()
     {
         // $this->setMockHttpResponse('PurchaseSuccess.txt');
-        $response = $this->gateway->purchase($this->options)->send();
+        $options = array_merge($this->options, [
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+        ]);
+        $response = $this->gateway->purchase($options)->send();
         $this->assertInstanceOf('Omnipay\PayeezyDirect\Message\Response', $response);
+        $this->assertEquals($response->getAmount(), $options['amount']);
         $this->assertTrue($response->isSuccessful());
     }
 
-    public function testTokenPurchaseSuccess()
+    public function testPurchaseFailure()
     {
-        // $this->setMockHttpResponse('TokenPurchaseSuccess.txt');
+        // $this->setMockHttpResponse('PurchaseSuccess.txt');
         $options = array_merge($this->options, [
-            'paymentMethod' => 'token',
-            'cardReference' => '1033081934821111',
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+            'amount'         => 5811.00, // fail error code 811, bad vvv
         ]);
         $response = $this->gateway->purchase($options)->send();
-        $this->assertTrue($response->isSuccessful());
+        $this->assertInstanceOf('Omnipay\PayeezyDirect\Message\Response', $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertEquals(811, $response->getCode());
     }
 
     public function testAuthorizeSuccess()
     {
         // $this->setMockHttpResponse('AuthorizeSuccess.txt');
-		$response = $this->gateway->authorize($this->options)->send();
+        $options = array_merge($this->options, [
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+            'amount'         => 13.00,
+        ]);
+		$response = $this->gateway->authorize($options)->send();
         $this->assertTrue($response->isSuccessful());
     }
 
     public function testTimeoutVoidSuccess()
     {
+        // get valid reversal_id
         $reversal_id = $this->gateway->setReversalId()->getReversalId();
-        // try to void without response
+        $this->assertStringStartsWith('Re-txn-', $reversal_id);
+        // mock repsonse due to only workign in production or cert env
         $this->setMockHttpResponse('TimeoutVoidSuccess.txt');
 		$response = $this->gateway->void($this->options)->send();
         $this->assertTrue($response->isSuccessful());
@@ -79,26 +92,50 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
     public function testVoidSuccess()
     {
         // make payment
-        $response = $this->gateway->purchase($this->options)->send();
-        $options = [
-            'testMode'       => true,
-            'amount'         => '13.12',
-            'currency'       => 'USD',
+        $options = array_merge($this->options, [
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+        ]);
+        $response = $this->gateway->purchase($options)->send();
+        //
+        $options = array_merge($this->options, [
             'paymentMethod'  => 'card',
             'transactionReference' => $response->getTransactionReference(),
-        ];
+        ]);
 		$response = $this->gateway->void($options)->send();
-        echo $response->getMessage();
         $this->assertTrue($response->isSuccessful());
     }
 
     public function testCreateCardSuccess()
     {
         // $this->setMockHttpResponse('CreateCardSuccess.txt');
-		$response = $this->gateway->createCard($this->options)->send();
+        $options = array_merge($this->options, [
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+        ]);
+		$response = $this->gateway->createCard($options)->send();
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('ET143165:156310751', $response->getTransactionReference());
-        $this->assertEquals('1033081934821111', $response->getCardReference());
+    }
+
+    public function testTokenPurchaseSuccess()
+    {
+        // get token
+        $options = array_merge($this->options, [
+            'card'           => $this->getValidCard(),
+            'paymentMethod'  => 'card',
+        ]);
+		$response = $this->gateway->createCard($options)->send();
+        $this->assertTrue($response->isSuccessful());
+        $this->assertNotNull($response->getCardReference());
+
+        $options = array_merge($this->options, [
+            'cardReference' => $response->getCardReference(),
+            'paymentMethod' => 'token', // paying with token
+            'tokenBrand'    => 'visa', // must store type with card token, name, exp, etc. PZ requires this to be passed every time
+            'card'          => $this->getValidCard(), // unlike other gateways, we need token + full card data
+        ]);
+        $response = $this->gateway->purchase($options)->send();
+        $this->assertTrue($response->isSuccessful());
     }
 
     /**
