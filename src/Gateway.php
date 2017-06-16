@@ -51,6 +51,18 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * complete an authorized purchase.
+     *
+     * @param array $parameters
+     *
+     * @return \Omnipay\PayeezyDirect\Message\CompletePurchaseRequest
+     */
+    public function completePurchase(array $parameters = [])
+    {
+        return $this->createRequest('\Omnipay\PayeezyDirect\Message\CompletePurchaseRequest', $parameters);
+    }
+
+    /**
      * Create a capture request.
      *
      * @param array $parameters
