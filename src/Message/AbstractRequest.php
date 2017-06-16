@@ -138,16 +138,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $client->setBody($data, $headers['Content-Type']);
         $client->getCurlOptions()->set(CURLOPT_PORT, 443);
         $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
-        // file_put_contents("request_$this->transaction_type", $client);
+        // file_put_contents("http_data/request_$this->transaction_type", $client);
 
         try {
             $httpResponse = $client->send();
-            // file_put_contents("response_$this->transaction_type", $httpResponse);
+            // file_put_contents("http_data/response_$this->transaction_type", $httpResponse);
             return $this->createResponse($httpResponse->getBody());
 
         } catch (\Exception $e) {
             return $this->createResponse($client->getResponse()->getBody());
-            // file_put_contents("error", $e->getMessage());
+            // file_put_contents("http_data/error", $e->getMessage());
         }
     }
 
