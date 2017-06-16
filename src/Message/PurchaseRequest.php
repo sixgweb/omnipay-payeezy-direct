@@ -24,7 +24,7 @@ class PurchaseRequest extends AbstractRequest
         $data = array_merge(parent::getData(), [
             'amount'             => $this->getSubmitAmount(),
             'currency_code'      => $this->getCurrency(),
-            'method'             => $this->getPaymentMethod() == 'card' ? 'credit_card' : $this->getPaymentMethod(),
+            'method'             => $this->getPaymentMethod(),
         ]);
 
         if ($merchant_ref = $this->getMerchantRef()) {
@@ -41,7 +41,7 @@ class PurchaseRequest extends AbstractRequest
 
         switch ($this->getPaymentMethod()) {
             // credit card
-            case 'card':
+            case 'credit_card':
                 $this->getCard()->validate();
                 $data['credit_card'] = $card + [
                     'card_number' => $this->getCard()->getNumber(),

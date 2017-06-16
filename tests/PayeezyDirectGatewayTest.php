@@ -29,7 +29,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
             'amount'         => '13.12',
             'card'           => $this->getValidCard(),
             'currency'       => 'USD',
-            'payment_method' => 'card',
+            'paymentMethod'  => 'card',
         ];
     }
 
@@ -43,38 +43,33 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
     public function testPurchaseSuccess()
     {
-        $this->setMockHttpResponse('PurchaseSuccess.txt');
+        // $this->setMockHttpResponse('PurchaseSuccess.txt');
         $response = $this->gateway->purchase($this->options)->send();
+        $this->assertInstanceOf('Omnipay\PayeezyDirect\Message\Response', $response);
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('ET114094:155692013', $response->getTransactionReference());
     }
 
     public function testTokenPurchaseSuccess()
     {
-        $this->setMockHttpResponse('TokenPurchaseSuccess.txt');
+        // $this->setMockHttpResponse('TokenPurchaseSuccess.txt');
         $options = array_merge($this->options, [
-            'payment_method' => 'token',
-            'cardReference'  => '1033081934821111',
+            'paymentMethod' => 'token',
+            'cardReference' => '1033081934821111',
         ]);
         $response = $this->gateway->purchase($options)->send();
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('ET143165:156310751', $response->getTransactionReference());
     }
 
     public function testAuthorizeSuccess()
     {
-        $this->setMockHttpResponse('AuthorizeSuccess.txt');
+        // $this->setMockHttpResponse('AuthorizeSuccess.txt');
 		$response = $this->gateway->authorize($this->options)->send();
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('ET153636:156306794', $response->getTransactionReference());
     }
 
     public function testTimeoutVoidSuccess()
     {
-        // set / get reversal id
-        $reversal_id = "Re-txn-" . md5($this->gateway->getApiKey() . microtime(1));
-        $this->gateway->setReversalId($reversal_id);
-        $this->assertEquals($reversal_id, $this->gateway->getReversalId());
+        $reversal_id = $this->gateway->setReversalId()->getReversalId();
         // try to void without response
         $this->setMockHttpResponse('TimeoutVoidSuccess.txt');
 		$response = $this->gateway->void($this->options)->send();
@@ -83,18 +78,23 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
     public function testVoidSuccess()
     {
-        $this->setMockHttpResponse('VoidSuccess.txt');
-        $options = array_merge($this->options, [
-            'transactionReference' => 'ET171025:156304361'
-        ]);
+        // make payment
+        $response = $this->gateway->purchase($this->options)->send();
+        $options = [
+            'testMode'       => true,
+            'amount'         => '13.12',
+            'currency'       => 'USD',
+            'paymentMethod'  => 'card',
+            'transactionReference' => $response->getTransactionReference(),
+        ];
 		$response = $this->gateway->void($options)->send();
+        echo $response->getMessage();
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('ET171025:156304361', $response->getTransactionReference());
     }
 
     public function testCreateCardSuccess()
     {
-        $this->setMockHttpResponse('CreateCardSuccess.txt');
+        // $this->setMockHttpResponse('CreateCardSuccess.txt');
 		$response = $this->gateway->createCard($this->options)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('ET143165:156310751', $response->getTransactionReference());

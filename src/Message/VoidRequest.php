@@ -27,7 +27,7 @@ class VoidRequest extends AbstractRequest
         $data = array_merge(parent::getData(), [
             'amount'             => $this->getSubmitAmount(),
             'currency_code'      => $this->getCurrency(),
-            'method'             => $this->getPaymentMethod() ?: 'credit_card',
+            'method'             => $this->getPaymentMethod(),
         ]);
 
         // add reversal id for timeout voids

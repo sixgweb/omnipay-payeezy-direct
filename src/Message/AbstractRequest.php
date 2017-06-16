@@ -190,4 +190,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $ref ? explode(':', $this->getTransactionReference())[1] : null;
     }
 
+    public function getPaymentMethod()
+    {
+        $method = parent::getPaymentMethod();
+        return $method == 'card' ? 'credit_card' : $method;
+    }
+
 }
