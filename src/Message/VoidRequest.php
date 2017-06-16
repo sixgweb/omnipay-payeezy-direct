@@ -27,7 +27,6 @@ class VoidRequest extends AbstractRequest
         $data = array_merge(parent::getData(), [
             'amount'             => $this->getSubmitAmount(),
             'currency_code'      => $this->getCurrency(),
-            'partial_redemption' => 'false',
             'method'             => $this->getPaymentMethod(),
         ]);
 
@@ -39,7 +38,7 @@ class VoidRequest extends AbstractRequest
             $data['transaction_tag'] = $this->getTransactionTag();
         }
 
-        return json_encode($data, JSON_FORCE_OBJECT);
+        return $data;
     }
 
     public function getEndpoint()
