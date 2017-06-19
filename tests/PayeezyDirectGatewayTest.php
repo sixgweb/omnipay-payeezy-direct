@@ -106,7 +106,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
     }
 
-    public function testAuthorizeAndCompleteSuccess()
+    public function testAuthorizeAndCaptureSuccess()
     {
         // auth purchase
         $options = array_merge($this->options, [
@@ -119,7 +119,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
             'paymentMethod'  => 'card',
             'transactionReference' => $response->getTransactionReference(),
         ]);
-		$response = $this->gateway->completePurchase($options)->send();
+		$response = $this->gateway->capture($options)->send();
         $this->assertTrue($response->isSuccessful());
     }
 
