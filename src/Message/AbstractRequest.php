@@ -138,6 +138,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $client->setBody($data, $headers['Content-Type']);
         $client->getCurlOptions()->set(CURLOPT_PORT, 443);
         $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
+        $client->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, 10);
         // file_put_contents("http_data/request_$this->transaction_type", $client);
 
         try {
@@ -146,8 +147,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             return $this->createResponse($httpResponse->getBody());
 
         } catch (\Exception $e) {
-            return $this->createResponse($client->getResponse()->getBody());
             // file_put_contents("http_data/error", $e->getMessage());
+            // if we have a response
+            if ($client->getResponse()) {
+                // parse the error message
+                return $this->createResponse($client->getResponse()->getBody());
+            } else {
+                // otherwise just throw up the exception
+                throw $e;
+            }
         }
     }
 
