@@ -123,14 +123,14 @@ trait GetterSetterTrait
         return $this->getParameter('reversal_id');
     }
 
-	public function setMerchantRef($value)
+	public function setOrderNumber($value)
 	{
-		return $this->setParameter('merchant_ref', $value);
+		return $this->setParameter('order_number', $value);
 	}
 
-	public function getMerchantRef()
+	public function getOrderNumber()
 	{
-		return $this->getParameter('merchant_ref');
+		return $this->getParameter('order_number');
 	}
 
 	public function setTokenBrand($value)

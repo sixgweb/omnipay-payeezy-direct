@@ -27,8 +27,9 @@ class PurchaseRequest extends AbstractRequest
             'method'             => $this->getPaymentMethod(),
         ]);
 
-        if ($merchant_ref = $this->getMerchantRef()) {
-            $data['merchant_ref'] = $merchant_ref;
+        // order number/merchant reference number
+        if ($order_number = $this->getOrderNumber()) {
+            $data['merchant_ref'] = $order_number;
         }
 
         // common data
