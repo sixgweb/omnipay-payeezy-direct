@@ -66,6 +66,21 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->assertEquals(811, $response->getCode());
     }
 
+    public function testGiftCardPurchaseSuccess()
+    {
+        // $this->setMockHttpResponse('PurchaseSuccess.txt');
+        $options = array_merge($this->options, [
+            'paymentMethod'  => 'valuelink',
+            'card'           => [
+                'name'   => 'John Smith',
+                'number' => '7777045839985463',
+            ],
+        ]);
+        $response = $this->gateway->purchase($options)->send();
+        $this->assertInstanceOf('Omnipay\PayeezyDirect\Message\Response', $response);
+        $this->assertTrue($response->isSuccessful());
+    }
+
     public function testAuthorizeSuccess()
     {
         // $this->setMockHttpResponse('AuthorizeSuccess.txt');

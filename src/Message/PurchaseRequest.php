@@ -57,6 +57,14 @@ class PurchaseRequest extends AbstractRequest
                     ],
                 ];
             break;
+
+            case 'valuelink':
+                $data['valuelink'] = [
+                    'cardholder_name'  => $this->getCard()->getName(),
+                    'cc_number'        => $this->getCard()->getNumber(),
+                    'credit_card_type' => 'Gift',
+                ];
+            break;
         }
 
         // billing address
