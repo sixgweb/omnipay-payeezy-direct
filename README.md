@@ -1,5 +1,3 @@
-# ***This is a work in progress, do not use if you see this message***
-
 ## Omnipay: Payeezy Direct (First Data)
 
 **Payeezy Direct (First Data) driver for the Omnipay PHP payment processing library**
