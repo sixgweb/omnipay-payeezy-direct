@@ -24,11 +24,7 @@ class VoidRequest extends AbstractRequest
             $this->validate('transactionReference');
         }
 
-        $data = array_merge(parent::getData(), [
-            'amount'             => $this->getSubmitAmount(),
-            'currency_code'      => $this->getCurrency(),
-            'method'             => $this->getPaymentMethod(),
-        ]);
+        $data = parent::getData();
 
         // add reversal id for timeout voids
         if ($reversal_id) {

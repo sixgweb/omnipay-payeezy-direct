@@ -5,10 +5,11 @@
 
 namespace Omnipay\PayeezyDirect\Message;
 use Omnipay\PayeezyDirect\GetterSetterTrait;
+use Omnipay\Common\Message\AbstractRequest as ExtendedAbstractRequest;
 /**
  * First Data Payeezy Abstract Request
  */
-abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
+abstract class AbstractRequest extends ExtendedAbstractRequest
 {
     use GetterSetterTrait;
 
@@ -93,6 +94,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return [
 			'transaction_type' => $this->transaction_type,
+            'amount'           => $this->getSubmitAmount(),
+            'currency_code'    => $this->getCurrency(),
+            'method'           => $this->getPaymentMethod(),
 		];
     }
 

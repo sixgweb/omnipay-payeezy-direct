@@ -170,6 +170,17 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
     }
 
+    public function testApplePayPurchase() {
+        // get apple pay data from file
+        $options = array_merge($this->options, [
+            'paymentMethod' => 'apple_pay',
+            'apple_pay'     => json_decode(file_get_contents(dirname(__FILE__) . '/Mock/PKPaymentRequest.json'), true),
+        ]);
+
+        $response = $this->gateway->purchase($options)->send();
+        $this->assertTrue($response->isSuccessful());
+    }
+
     /**
      * [getValidCard Payeezy direct requests a 1XX CVV to show as valid]
      * @return [type] array

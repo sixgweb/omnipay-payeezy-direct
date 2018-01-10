@@ -142,4 +142,14 @@ trait GetterSetterTrait
 	{
 		return $this->getParameter('token_brand');
 	}
+
+	public function setApplePay($value)
+	{
+		return $this->setParameter('apple_pay', $value);
+	}
+
+	public function getApplePay()
+	{
+		return $this->getParameter('apple_pay');
+	}
 }

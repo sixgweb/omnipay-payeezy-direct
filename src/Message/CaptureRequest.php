@@ -19,8 +19,6 @@ class CaptureRequest extends AbstractRequest
         $this->validate('amount','transactionReference');
 
         $data = array_merge(parent::getData(), [
-            'amount'             => $this->getSubmitAmount(),
-            'currency_code'      => $this->getCurrency(),
             'transaction_tag'    => $this->getTransactionTag(),
         ]);
 
