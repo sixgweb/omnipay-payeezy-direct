@@ -34,7 +34,6 @@ class PurchaseRequest extends AbstractRequest
 
         // common data
         $card = [
-            'type'            => $this->getCard()->getBrand() ?: $this->getTokenBrand(),
             'cardholder_name' => $this->getCard()->getName(),
             'exp_date'        => $this->getCard()->getExpiryDate('my'),
             'cvv'             => $this->getCard()->getCvv(),
@@ -46,13 +45,16 @@ class PurchaseRequest extends AbstractRequest
                 $this->getCard()->validate();
                 $data['credit_card'] = $card + [
                     'card_number' => $this->getCard()->getNumber(),
+                    'type'        => $this->getCard()->getBrand(),
                 ];
             break;
 
             case 'token':
+                $this->validate('token_brand');
                 $data['token'] = [
                     'token_type' => 'FDToken',
                     'token_data' => $card + [
+                        'type'   => $this->getTokenBrand(),
                         'value'  => $this->getCardReference(),
                     ],
                 ];
