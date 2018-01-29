@@ -151,15 +151,16 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
     public function testTokenPurchaseSuccess()
     {
-        // get token
+        // get card data
         $options = array_merge($this->options, [
             'card'           => $this->getValidCard(),
             'paymentMethod'  => 'card',
         ]);
+        // tokenize with $0 Auth
 		$response = $this->gateway->createCard($options)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertNotNull($response->getCardReference());
-
+        // set token value and card brand
         $options = array_merge($this->options, [
             'cardReference' => $response->getCardReference(),
             'paymentMethod' => 'token', // paying with token
