@@ -24,7 +24,8 @@
         "psr-4": { "Omnipay\\PayeezyDirect\\" : "src/" }
     },
     "require": {
-        "omnipay/common": "~2.0"
+        "omnipay/common": "~2.0",
+        "php": ">=5.5"
     },
     "require-dev": {
         "omnipay/tests": "~2.0"
