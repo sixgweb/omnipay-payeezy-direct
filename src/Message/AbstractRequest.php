@@ -137,7 +137,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $client = $this->httpClient->post($endpoint, $headers);
         $client->setBody($data, $headers['Content-Type']);
         $client->getCurlOptions()->set(CURLOPT_PORT, 443);
-        $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
+        $client->getCurlOptions()->set(CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2); // First Data enforcing TLS 1.2 only
         $client->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, 10);
         // file_put_contents("http_data/request_$this->transaction_type", $client);
 
