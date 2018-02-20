@@ -25,8 +25,7 @@
 				"publicKeyHash": "YmSWN7lj4+A6fVJVPicP8TgS7gI7ougD8rEWB5LXtMM=",
 				"transactionId": "31323334353637"
 			},
-			"applicationData": "VEVTVA==",
-			"merchantIdentifier": "order-1"
+			"applicationData": "VEVTVA=="
 		},
 		"paymentMethod": {
 			"displayName": "MasterCard 1471",

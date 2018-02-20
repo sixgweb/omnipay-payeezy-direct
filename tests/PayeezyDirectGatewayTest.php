@@ -174,8 +174,9 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
     public function testApplePayPurchase() {
         // get apple pay data from file
         $options = array_merge($this->options, [
-            'paymentMethod' => 'apple_pay',
-            'apple_pay'     => json_decode(file_get_contents(dirname(__FILE__) . '/Mock/PKPaymentRequest.json'), true),
+            'paymentMethod'       => 'apple_pay',
+            'apple_pay'           => json_decode(file_get_contents(dirname(__FILE__) . '/Mock/PKPaymentRequest.json'), true),
+            'merchant_identifier' => 'order-1',
         ]);
 
         $response = $this->gateway->purchase($options)->send();

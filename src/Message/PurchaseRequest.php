@@ -28,7 +28,7 @@ class PurchaseRequest extends AbstractRequest
         switch ($this->getPaymentMethod()) {
             case 'apple_pay':
                 // make sure whave ap data sent
-                $this->validate('apple_pay');
+                $this->validate('apple_pay','merchant_identifier');
                 $ap_data = $this->getApplePay();
                 $billing = $ap_data['billingContact'];
                 $token   = $ap_data['token'];
@@ -95,7 +95,9 @@ class PurchaseRequest extends AbstractRequest
                 $data['method'] = '3ds';
                 // set 3ds data
                 $data['3DS'] = $threeDS['token']['paymentData'];
-                // mark as Apple Pay
+                // set merchant_identifier
+                $data['3DS']['merchantIdentifier'] = $this->getMerchantIdentifier();
+                // mark as Apple Pay 
                 $data['3DS']['type'] = 'A';// A is for Apple Pay
             break;
 

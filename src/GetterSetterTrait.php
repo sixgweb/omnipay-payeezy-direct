@@ -152,4 +152,14 @@ trait GetterSetterTrait
 	{
 		return $this->getParameter('apple_pay');
 	}
+
+	public function setMerchantIdentifier($value)
+	{
+		return $this->setParameter('merchant_identifier', $value);
+	}
+
+	public function getMerchantIdentifier()
+	{
+		return $this->getParameter('merchant_identifier');
+	}
 }
