@@ -36,6 +36,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const TRAN_TAGGEDVOID               = 'void';
     const TRAN_REFUND                   = 'refund';
     const TRAN_TAGGEDREFUND             = 'refund';
+    const TRAN_SCORE_ONLY               = 'score_only';
 
     // const TRAN_FORCEDPOST               = '03';
     // const TRAN_PREAUTHONLY              = '05';

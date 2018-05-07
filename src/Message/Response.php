@@ -18,7 +18,10 @@ class Response extends AbstractResponse
 
     public function isSuccessful()
     {
-        return is_object($this->data) && $this->getDataItem('transaction_status') == 'approved';
+        // list of successful values
+        $successful = ['approved', 'Scored Successfully'];
+        // make sure status result is in our array of
+        return is_object($this->data) && in_array($this->getDataItem('transaction_status'), $successful);
     }
 
     /**

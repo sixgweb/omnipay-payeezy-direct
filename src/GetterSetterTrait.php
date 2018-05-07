@@ -142,4 +142,14 @@ trait GetterSetterTrait
 	{
 		return $this->getParameter('token_brand');
 	}
+
+	public function setScoreData($value)
+	{
+		return $this->setParameter('score_data', $value);
+	}
+
+	public function getScoreData()
+	{
+		return $this->getParameter('score_data');
+	}
 }
