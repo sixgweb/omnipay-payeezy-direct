@@ -20,30 +20,36 @@ class ScoreRequest extends AbstractRequest
 
         // concat basic data
         $data = parent::getData() + $this->getScoreData() + [
-			'amount'                    => $this->getSubmitAmount(),
-			'currency_code'             => $this->getCurrency(),
-			'payment' => [
-				'payment_type' => 'payment/card',
-				'method' => [
-					'method_type' => 'method/card',
-					'card_brand' =>  $this->getTokenBrand(),
-					'card' => [
-						'exp_date'       => $this->getCard()->getExpiryDate('mY'),
-						'cvv_present'    => $this->getCard()->getCvv() ? true : false,
-					]
-				],
-				'pin_present'  => false,
-				'entry_method' => 'remote'
-			],
-			'merchant' => [
-				'merchant_unique_id' => 'SUNOCO_WALLET', // in production use FD defined var
+            'amount'                    => $this->getSubmitAmount(),
+            'currency_code'             => $this->getCurrency(),
+            'payment' => [
+                'payment_type' => 'payment/card',
+                'method' => [
+                    'method_type' => 'method/card',
+                    'card_brand' =>  $this->getTokenBrand(),
+                    'card' => [
+                        'exp_date'       => $this->getCard()->getExpiryDate('mY'),
+                        'cvv_present'    => $this->getCard()->getCvv() ? true : false,
+                    ]
+                ],
+                'pin_present'  => false,
+                'entry_method' => 'remote'
             ],
         ];
+
+        // FD test values
+        if ($this->getTestMode()) {
+            $data['merchant']['merchant_unique_id'] = 'SUNOCO_WALLET';
+        }
 
         // use token
         if ($this->getPaymentMethod() == 'token') {
             $data['payment']['method']['card']['ta_token']     = $this->getCardReference();
             $data['payment']['method']['card']['ta_token_key'] = $this->getTransArmorToken();
+            // FD only allows one card/token in testing
+            if ($this->getTestMode()) {
+                $data['payment']['method']['card']['ta_token'] = '2537446225198291';
+            }
         }
 
         return $data;

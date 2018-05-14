@@ -195,7 +195,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
         // set token value and card brand
         $options = array_merge($this->options, [
-            'cardReference' => '2537446225198291', //$response->getCardReference(),
+            'cardReference' => $response->getCardReference(),
             'paymentMethod' => 'token', // paying with token
             'tokenBrand'    => $card->getBrand(), // must store type with card token, name, exp, etc. PZ requires this to be passed every time
             'card'          => [
@@ -207,7 +207,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
                 'original_transaction_type' => 'transaction/authorization', // required
     			'original_transaction_id'   => $response->getTransactionId(), // required
             	'merchant' => [
-    				'merchant_unique_id' => 'SUNOCO_WALLET', // required 
+    				'merchant_unique_id' => 'SOME_TEST_ID',
     				"location" => [
     					"location_id"      => '1001',
     					"merchant_address" => [
