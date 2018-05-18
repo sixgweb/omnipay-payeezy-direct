@@ -112,6 +112,9 @@ class Response extends AbstractResponse
         if ($error = $this->getDataItem('Error')) {
             return $error->messages[0]->description;
         }
+        if ($error = $this->getDataItem('fraud_score')) {
+            return isset($error->warnings) ? $error->warnings[0] : '';
+        }
         // gateway error
         if ($this->getDataItem('gateway_resp_code') !== '00') {
             return $this->getDataItem('gateway_message');
@@ -125,4 +128,28 @@ class Response extends AbstractResponse
             return $fault->faultstring;
         }
     }
+
+    public function getScore()
+    {
+        if ($response = $this->getDataItem('fraud_score')) {
+            if (isset($response->score)) {
+                return $response->score;
+            }
+        }
+    }
+
+    /** 
+     * does FD think this is fraud
+     * @return bool 
+     */
+    public function isFraud()
+    {
+        if ($response = $this->getDataItem('fraud_score')) {
+            if (isset($response->recommended_decision)) {
+                return $response->recommended_decision != 'approve';
+            }
+        }
+    }
+
+
 }

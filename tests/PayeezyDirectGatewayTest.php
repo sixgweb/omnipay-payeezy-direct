@@ -173,7 +173,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
     }
 
-    public function testAuthAndScore()
+    public function testAuthAndScorePassed()
     {
         // start with new card
         $card = new CreditCard($this->getValidCard());
@@ -306,6 +306,8 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         // send to score
         $response = $this->gateway->score($options)->send();
         $this->assertTrue($response->isSuccessful());
+        $this->assertEquals(0, $response->getScore());
+        $this->assertFalse($response->isFraud());
 
         // print_r($response->getData());exit;
 
