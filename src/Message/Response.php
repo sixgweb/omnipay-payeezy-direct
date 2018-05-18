@@ -42,7 +42,11 @@ class Response extends AbstractResponse
 
     public function getTransactionReference()
     {
-        return $this->getDataItem('transaction_id') . ':' . $this->getDataItem('transaction_tag');
+        $ref = $this->getDataItem('transaction_id') . ':' . $this->getDataItem('transaction_tag');
+        // make sure we got a ref at all
+        if ($ref != ':') {
+            return $ref;
+        }
     }
 
     public function getTransactionId()
