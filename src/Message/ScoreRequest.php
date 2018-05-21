@@ -37,19 +37,10 @@ class ScoreRequest extends AbstractRequest
             ],
         ];
 
-        // FD test values
-        if ($this->getTestMode()) {
-            $data['merchant']['merchant_unique_id'] = 'SUNOCO_WALLET';
-        }
-
         // use token
         if ($this->getPaymentMethod() == 'token') {
             $data['payment']['method']['card']['ta_token']     = $this->getCardReference();
             $data['payment']['method']['card']['ta_token_key'] = $this->getTransArmorToken();
-            // FD only allows one card/token in testing
-            if ($this->getTestMode()) {
-                $data['payment']['method']['card']['ta_token'] = '2537446225198291';
-            }
         }
 
         return $data;

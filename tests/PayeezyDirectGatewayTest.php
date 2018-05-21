@@ -173,6 +173,9 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
     }
 
+    /**
+     * FraudDetect scoring
+     */
     public function testAuthAndScorePassed()
     {
         // start with new card
@@ -195,7 +198,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
         // set token value and card brand
         $options = array_merge($this->options, [
-            'cardReference' => $response->getCardReference(),
+            'cardReference' => '2537446225198291', //normally use $response->getCardReference(),  // only cc token that works in sandbox
             'paymentMethod' => 'token', // paying with token
             'tokenBrand'    => $card->getBrand(), // must store type with card token, name, exp, etc. PZ requires this to be passed every time
             'card'          => [
@@ -207,7 +210,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
                 'original_transaction_type' => 'transaction/authorization', // required
     			'original_transaction_id'   => $response->getTransactionId(), // required
             	'merchant' => [
-    				'merchant_unique_id' => 'SOME_TEST_ID',
+    				'merchant_unique_id' => 'SUNOCO_WALLET', // only id that works in the sandbox
     				"location" => [
     					"location_id"      => '1001',
     					"merchant_address" => [
