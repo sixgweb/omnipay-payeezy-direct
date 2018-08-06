@@ -208,8 +208,8 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
             ],
             'scoreData' => [
                 'original_transaction_type' => 'transaction/authorization', // required
-    			'original_transaction_id'   => $response->getTransactionId(), // required
-            	'merchant' => [
+                'original_transaction_id'   => 'SOME-UNIQUE-ID-' . microtime(), // required
+                'merchant' => [
     				'merchant_unique_id' => 'SUNOCO_WALLET', // only id that works in the sandbox
     				"location" => [
     					"location_id"      => '1001',
