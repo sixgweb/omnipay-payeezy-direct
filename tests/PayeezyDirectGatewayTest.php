@@ -310,6 +310,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $response = $this->gateway->score($options)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals(0, $response->getScore());
+        $this->assertEquals('approve', $response->getFraudRecommendation());
         $this->assertFalse($response->isFraud());
 
         // print_r($response->getData());exit;

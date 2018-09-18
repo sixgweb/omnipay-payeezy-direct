@@ -138,9 +138,20 @@ class Response extends AbstractResponse
         }
     }
 
-    /** 
+    /**
+     * get fraud recommendation
+     * @return bool
+     */
+    public function getFraudRecommendation()
+    {
+        if ($response = $this->getDataItem('fraud_score')) {
+            return $response->recommended_decision;
+        }
+    }
+
+    /**
      * does FD think this is fraud
-     * @return bool 
+     * @return bool
      */
     public function isFraud()
     {
