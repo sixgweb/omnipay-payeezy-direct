@@ -146,9 +146,11 @@ class Response extends AbstractResponse
     {
         if ($response = $this->getDataItem('fraud_score')) {
             if (isset($response->recommended_decision)) {
-                return $response->recommended_decision != 'approve';
+                return $response->recommended_decision == 'decline';
             }
         }
+
+        return false;
     }
 
 
