@@ -190,11 +190,14 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
 
         // tokenize card with $0 Auth
         $response = $this->gateway->createCard($options)->send();
-        $response_data = $response->getData();
 
         // test
         $this->assertTrue($response->isSuccessful());
         $this->assertNotNull($response->getCardReference());
+
+        // authorize card
+        $response = $this->gateway->authorize($options)->send();
+        $this->assertTrue($response->isSuccessful());
 
         // set token value and card brand
         $options = array_merge($this->options, [
@@ -225,6 +228,14 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
     					// "hierarchy" => "abc"
     			  ],
     			],
+                'payment' => [
+                    'issuer_response' => [
+                        'code'                   => $response->getIssuerResponseCode(),
+                        'status'                 => $response->getIssuerResponseStatus(),
+                        'scheme'                 => $card->getBrand(),
+                        'issuer_approved_amount' => $options['amount'],
+                    ],
+                ],
             	"customer" => [
     				"id"            => 1234,
     				"start_date"    => (new DateTime)->format('Y-m-d'),

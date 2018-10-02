@@ -59,6 +59,18 @@ class Response extends AbstractResponse
         return $this->getDataItem('transaction_tag');
     }
 
+
+	public function getIssuerResponseCode()
+	{
+		return $this->getDataItem('bank_resp_code');
+	}
+
+	public function getIssuerResponseStatus()
+	{
+		return $this->getDataItem('bank_message');
+	}
+
+
     public function getAmount()
     {
         return $this->getDataItem('amount') ? number_format($this->getDataItem('amount') / 100, 2) : null;

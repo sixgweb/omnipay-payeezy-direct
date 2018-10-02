@@ -19,7 +19,7 @@ class ScoreRequest extends AbstractRequest
         $this->validate('amount', 'card', 'score_data');
 
         // concat basic data
-        $data = parent::getData() + $this->getScoreData() + [
+        $data = array_merge_recursive(parent::getData(), $this->getScoreData(), [
             'amount'                    => $this->getSubmitAmount(),
             'currency_code'             => $this->getCurrency(),
             'payment' => [
@@ -35,7 +35,7 @@ class ScoreRequest extends AbstractRequest
                 'pin_present'  => false,
                 'entry_method' => 'remote'
             ],
-        ];
+        ]);
 
         // use token
         if ($this->getPaymentMethod() == 'token') {
