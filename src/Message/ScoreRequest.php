@@ -33,7 +33,11 @@ class ScoreRequest extends AbstractRequest
                     ]
                 ],
                 'pin_present'  => false,
-                'entry_method' => 'remote'
+                'entry_method' => 'remote',
+                'issuer_response' => [
+                    'scheme'                 => $this->getTokenBrand(),
+                    'issuer_approved_amount' => $this->getSubmitAmount(),
+                ]
             ],
         ]);
 
