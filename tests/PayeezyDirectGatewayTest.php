@@ -231,7 +231,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
                 'payment' => [
                     'issuer_response' => [
                         'code'                   => $response->getIssuerResponseCode(),
-                        'status'                 => $response->getIssuerResponseStatus(),
+                        'status'                 => strtolower($response->getIssuerResponseStatus()),
                     ],
                 ],
             	"customer" => [
