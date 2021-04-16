@@ -94,17 +94,6 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
         $this->assertEquals($response->getAmount(), $options['amount']);
     }
 
-    public function testTimeoutVoidSuccess()
-    {
-        // get valid reversal_id
-        $reversal_id = $this->gateway->setReversalId()->getReversalId();
-        $this->assertStringStartsWith('Re-txn-', $reversal_id);
-        // mock repsonse due to only workign in production or cert env
-        // $this->setMockHttpResponse('TimeoutVoidSuccess.txt');
-		$response = $this->gateway->void($this->options)->send();
-        $this->assertTrue($response->isSuccessful());
-    }
-
     public function testVoidSuccess()
     {
         // make purchase
@@ -150,6 +139,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
             'card'           => $this->getValidCard(),
             'paymentMethod'  => 'card',
         ]);
+        $this->setMockHttpResponse('CreateCardSuccess.txt');
 		$response = $this->gateway->createCard($options)->send();
         $this->assertTrue($response->isSuccessful());
     }
@@ -161,6 +151,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
             'card'           => $this->getValidCard(),
             'paymentMethod'  => 'card',
         ]);
+        $this->setMockHttpResponse('CreateCardSuccess.txt');
         // tokenize with $0 Auth
 		$response = $this->gateway->createCard($options)->send();
         $this->assertTrue($response->isSuccessful());
@@ -172,6 +163,7 @@ class PayeezyDirectGatewayTest extends GatewayTestCase
             'tokenBrand'    => 'visa', // must store type with card token, name, exp, etc. PZ requires this to be passed every time
             'card'          => $this->getValidCard(), // unlike other gateways, we need token + full card data
         ]);
+        $this->setMockHttpResponse('TokenPurchaseSuccess.txt');
         $response = $this->gateway->purchase($options)->send();
         $this->assertTrue($response->isSuccessful());
     }

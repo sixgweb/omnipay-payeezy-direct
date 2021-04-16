@@ -12,6 +12,9 @@ class CaptureRequest extends AbstractRequest
 {
     protected $transaction_type = self::TRAN_TAGGEDPREAUTHCOMPLETE;
 
+    /**
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
     public function getData()
     {
 

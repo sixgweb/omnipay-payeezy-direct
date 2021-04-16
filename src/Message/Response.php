@@ -10,10 +10,15 @@ use Omnipay\Common\Message\RequestInterface;
 
 class Response extends AbstractResponse
 {
+    /**
+     * @throws \JsonException
+     */
     public function __construct(RequestInterface $request, $data)
     {
-        $this->request = $request;
-        $this->data = json_decode($data);
+        if (is_string($data)) {
+            $data = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+        }
+        parent::__construct($request, $data);
     }
 
     public function isSuccessful()
