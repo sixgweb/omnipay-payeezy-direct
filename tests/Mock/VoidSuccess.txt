@@ -9,4 +9,4 @@ X-Powered-By: Servlet/3.0
 Content-Length: 430
 Connection: keep-alive
 
-{"correlation_id":"228.9671161396027","transaction_status":"approved","validation_status":"success","transaction_tye":"void","transaction_id":"ET171025","transaction_tag":"156304361","method":"credit_card","amount":"1300","currency":"USD","token":{"token_type":"FDToken","token_data":{"value":"1183328213671111"}},"bank_resp_code":"100","bank_message":"Approved","gateway_resp_code":"00","gateway_message":"Transaction Normal"}
+{"correlation_id":"228.9671161396027","transaction_status":"approved","validation_status":"success","transaction_tye":"void","transaction_id":"ET171025","transaction_tag":"156304361","method":"credit_card","amount":"1312","currency":"USD","token":{"token_type":"FDToken","token_data":{"value":"1183328213671111"}},"bank_resp_code":"100","bank_message":"Approved","gateway_resp_code":"00","gateway_message":"Transaction Normal"}

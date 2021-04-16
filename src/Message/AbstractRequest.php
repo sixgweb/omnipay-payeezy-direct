@@ -134,24 +134,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         // add HMAC auth data
         $headers = array_merge($headers, $this->getAuthorizationHeaders());
 
-        $client = $this->httpClient->post($endpoint, $headers);
-        $client->setBody($data, $headers['Content-Type']);
-        $client->getCurlOptions()->set(CURLOPT_PORT, 443);
-        $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
-        $client->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, 10);
-        // file_put_contents("http_data/request_$this->transaction_type", $client);
-
         try {
-            $httpResponse = $client->send();
-            // file_put_contents("http_data/response_$this->transaction_type", $httpResponse);
-            return $this->createResponse($httpResponse->getBody());
+            // TODO: add timeout
+            $response = $this->httpClient->request('POST', $endpoint, $headers, $data);
+            // file_put_contents("http_data/request_$this->transaction_type", $data);
+            $body = $response->getBody()->getContents();
+            // $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
+            // $client->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, 10);
+            // file_put_contents("http_data/response_$this->transaction_type", $body);
+            return $this->createResponse($body);
 
         } catch (\Exception $e) {
             // file_put_contents("http_data/error", $e->getMessage());
             // if we have a response
-            if ($client->getResponse()) {
+            if ($contents = $response->getBody()->getContents()) {
                 // parse the error message
-                return $this->createResponse($client->getResponse()->getBody());
+                return $this->createResponse($contents);
             } else {
                 // otherwise just throw up the exception
                 throw $e;

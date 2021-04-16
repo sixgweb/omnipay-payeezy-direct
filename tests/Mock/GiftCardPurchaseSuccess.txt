@@ -1,0 +1,6 @@
+HTTP/1.1 201 OK
+Date: Tue, 11 Feb 2014 02:34:58 GMT
+Content-type: application/json; charset=utf-8
+Content-Length: 573
+
+{"correlation_id":"228.1854355440927","transaction_status":"approved","validation_status":"success","transaction_type":"purchase","transaction_tag":"4626826876","method":"valuelink","amount":"400","currency":"USD","bank_resp_code":"253","bank_message":"Invalid Tran. Type","gateway_resp_code":"00","gateway_message":"Transaction Normal","valuelink":{"cardholder_name":"Joe Smith","cc_number":"############5463","credit_card_type":"Gift","previous_balance":"0.0","current_balance":"0.0"},"value_link_auth_code":"253","local_currency_code":"840","retrieval_ref_no":"210415"}
