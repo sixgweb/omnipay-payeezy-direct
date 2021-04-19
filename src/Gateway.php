@@ -5,6 +5,12 @@
 namespace Omnipay\PayeezyDirect;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\PayeezyDirect\Message\PurchaseRequest;
+use Omnipay\PayeezyDirect\Message\AuthorizeRequest;
+use Omnipay\PayeezyDirect\Message\CaptureRequest;
+use Omnipay\PayeezyDirect\Message\RefundRequest;
+use Omnipay\PayeezyDirect\Message\VoidRequest;
+use Omnipay\PayeezyDirect\Message\CreateCardRequest;
 
 class Gateway extends AbstractGateway
 {
@@ -31,63 +37,67 @@ class Gateway extends AbstractGateway
      *
      * @param array $parameters
      *
-     * @return \Omnipay\PayeezyDirect\Message\PurchaseRequest
+     * @return PurchaseRequest
      */
     public function purchase(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\PayeezyDirect\Message\PurchaseRequest', $parameters);
+        return $this->createRequest(PurchaseRequest::class, $parameters);
     }
 
     /**
      * Create an authorize request.
      *
-     * @param array $parameters
+     * @param array $options
      *
-     * @return \Omnipay\PayeezyDirect\Message\AuthorizeRequest
+     * @return AuthorizeRequest
      */
-    public function authorize(array $parameters = [])
+    public function authorize(array $options = [])
     {
-        return $this->createRequest('\Omnipay\PayeezyDirect\Message\AuthorizeRequest', $parameters);
+        return $this->createRequest(AuthorizeRequest::class, $options);
     }
 
     /**
      * complete an authorized purchase.
      *
-     * @param array $parameters
+     * @param array $options
      *
-     * @return \Omnipay\PayeezyDirect\Message\CaptureRequest
+     * @return \Omnipay\Common\Message\AbstractRequest|CaptureRequest
      */
-    public function capture(array $parameters = [])
+    public function capture(array $options = [])
     {
-        return $this->createRequest('\Omnipay\PayeezyDirect\Message\CaptureRequest', $parameters);
+        return $this->createRequest(CaptureRequest::class, $options);
     }
 
     /**
      * Create a refund request.
      *
-     * @param array $parameters
+     * @param array $options
      *
      * @return \Omnipay\PayeezyDirect\Message\RefundRequest
      */
-    public function refund(array $parameters = [])
+    public function refund(array $options = [])
     {
-        return $this->createRequest('\Omnipay\PayeezyDirect\Message\RefundRequest', $parameters);
+        return $this->createRequest(RefundRequest::class, $options);
     }
 
     /**
      * Create a void request.
      *
-     * @param array $parameters
+     * @param array $options
      *
      * @return \Omnipay\PayeezyDirect\Message\VoidRequest
      */
-    public function void(array $parameters = [])
+    public function void(array $options = [])
     {
-        return $this->createRequest('\Omnipay\PayeezyDirect\Message\VoidRequest', $parameters);
+        return $this->createRequest(VoidRequest::class, $options);
     }
 
-    public function createCard(array $parameters = [])
+    /**
+     * @param array $options
+     * @return \Omnipay\PayeezyDirect\Message\CreateCardRequest
+     */
+    public function createCard(array $options = [])
     {
-        return $this->createRequest('\Omnipay\PayeezyDirect\Message\CreateCardRequest', $parameters);
+        return $this->createRequest(CreateCardRequest::class, $options);
     }
 }

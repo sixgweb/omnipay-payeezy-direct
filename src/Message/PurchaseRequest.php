@@ -15,6 +15,10 @@ class PurchaseRequest extends AbstractRequest
 
     protected $transaction_type = self::TRAN_PURCHASE;
 
+    /**
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     * @throws InvalidCreditCardException
+     */
     public function getData()
     {
 

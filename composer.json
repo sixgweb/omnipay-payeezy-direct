@@ -24,9 +24,11 @@
         "psr-4": { "Omnipay\\PayeezyDirect\\" : "src/" }
     },
     "require": {
-        "omnipay/common": "~2.0"
+        "omnipay/common": "^3",
+        "ext-openssl": "*",
+        "ext-json": "*"
     },
     "require-dev": {
-        "omnipay/tests": "~2.0"
+        "omnipay/tests": "^3"
     }
 }

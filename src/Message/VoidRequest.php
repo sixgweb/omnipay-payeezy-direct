@@ -12,6 +12,10 @@ class VoidRequest extends AbstractRequest
 {
     protected $transaction_type = self::TRAN_TAGGEDVOID;
 
+    /**
+     * @inheritDoc
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
     public function getData()
     {
 
@@ -45,8 +49,8 @@ class VoidRequest extends AbstractRequest
     {
         if ($this->getReversalId()) {
             return parent::getEndpoint();
-        } else {
-            return parent::getEndpoint() . '/' . $this->getTransactionId();
         }
+
+        return parent::getEndpoint() . '/' . $this->getTransactionId();
     }
 }

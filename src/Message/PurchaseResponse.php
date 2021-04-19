@@ -5,12 +5,15 @@
 
 namespace Omnipay\PayeezyDirect\Message;
 
-use Omnipay\Common\Message\AbstractResponse;
-use Omnipay\Common\Message\ResponseInterface;
 
 /**
  * First Data Connect Purchase Response
  */
-class PurchaseResponse extends AbstractResponse implements ResponseInterface
+class PurchaseResponse extends Response
 {
+    /** @inheritDoc */
+    public function isSuccessful()
+    {
+        return is_object($this->data) && $this->getDataItem('transaction_status') !== 'approved';
+    }
 }

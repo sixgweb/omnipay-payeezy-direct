@@ -1,16 +1,22 @@
 <?php
-/**
- * First Data Payeezy Abstract Request
- */
 
 namespace Omnipay\PayeezyDirect\Message;
+
+use Exception;
+use JsonException;
+use Omnipay\PayeezyDirect\Exceptions\PaymentAuthorizationException;
+use Omnipay\PayeezyDirect\Exceptions\PaymentInvalidRequestException;
+use Omnipay\PayeezyDirect\Exceptions\PaymentInvalidResponseException;
 use Omnipay\PayeezyDirect\GetterSetterTrait;
+use Omnipay\Common\Message\AbstractRequest as BaseRequest;
+
 /**
  * First Data Payeezy Abstract Request
  */
-abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
+abstract class AbstractRequest extends BaseRequest
 {
     use GetterSetterTrait;
+
 
     /** @var string Method used to calculate the hmac strings. */
     const METHOD_POST = 'POST';
@@ -28,14 +34,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected $transaction_type;
 
     // Transaction types
-    const TRAN_PURCHASE                 = 'purchase';
-    const TRAN_PREAUTH                  = 'authorize';
-    const TRAN_PREAUTHCOMPLETE          = 'capture';
-    const TRAN_TAGGEDPREAUTHCOMPLETE    = 'capture';
-    const TRAN_VOID                     = 'void';
-    const TRAN_TAGGEDVOID               = 'void';
-    const TRAN_REFUND                   = 'refund';
-    const TRAN_TAGGEDREFUND             = 'refund';
+    const TRAN_PURCHASE = 'purchase';
+    const TRAN_PREAUTH = 'authorize';
+    const TRAN_PREAUTHCOMPLETE = 'capture';
+    const TRAN_TAGGEDPREAUTHCOMPLETE = 'capture';
+    const TRAN_VOID = 'void';
+    const TRAN_TAGGEDVOID = 'void';
+    const TRAN_REFUND = 'refund';
+    const TRAN_TAGGEDREFUND = 'refund';
 
     // const TRAN_FORCEDPOST               = '03';
     // const TRAN_PREAUTHONLY              = '05';
@@ -48,12 +54,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /** @var array Names of the credit card types. */
     protected static $cardTypes = array(
-        'visa'        => 'Visa',
-        'mastercard'  => 'Mastercard',
-        'discover'    => 'Discover',
-        'amex'        => 'American Express',
+        'visa' => 'Visa',
+        'mastercard' => 'Mastercard',
+        'discover' => 'Discover',
+        'amex' => 'American Express',
         'diners_club' => 'Diners Club',
-        'jcb'         => 'JCB',
+        'jcb' => 'JCB',
     );
 
     /**
@@ -64,10 +70,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function getHeaders()
     {
         return [
-            'Accept'        => 'application/json',
-            'Content-Type'  => self::CONTENT_TYPE,
-            'apikey'        => $this->getApiKey(),
-            'token'         => $this->getMerchantToken(),
+            'Accept' => 'application/json',
+            'Content-Type' => self::CONTENT_TYPE,
+            'apikey' => $this->getApiKey(),
+            'token' => $this->getMerchantToken(),
         ];
     }
 
@@ -92,70 +98,82 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function getData()
     {
         return [
-			'transaction_type' => $this->transaction_type,
-		];
+            'transaction_type' => $this->transaction_type,
+        ];
     }
 
     /**
-	 * Payeezy
-	 *
-	 * HMAC Authentication
-	 * @return array $headers
-	 */
+     * Payeezy
+     *
+     * HMAC Authentication
+     * @return array $headers
+     * @throws PaymentAuthorizationException
+     * @throws PaymentInvalidRequestException
+     *
+     * @return array
+     */
+    public function getAuthorizationHeaders()
+    {
+        try {
+            $nonce = random_bytes(4);
+            $nonce = (string)hexdec(bin2hex($nonce));
+            // time stamp in milli seconds
+            $timestamp = (string)(time() * 1000);
+            $data = $this->getApiKey() . $nonce . $timestamp . $this->getMerchantToken() . json_encode($this->getData(), JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
+            // HMAC Hash in hex
+            $hmac = hash_hmac('sha256', $data, $this->getApiSecret(), false);
 
-	public function getAuthorizationHeaders() {
-        $nonce = strval(hexdec(bin2hex(openssl_random_pseudo_bytes(4, $cstrong))));
-        // time stamp in milli seconds
-        $timestamp = strval(time() * 1000);
-        $data = $this->getApiKey() . $nonce . $timestamp . $this->getMerchantToken() . json_encode($this->getData(), JSON_FORCE_OBJECT);
-        // HMAC Hash in hex
-        $hmac = hash_hmac('sha256', $data, $this->getApiSecret(), false);
+            $authorization = base64_encode($hmac);
 
-        $authorization = base64_encode($hmac);
-
-        return [
-            'Authorization' => $authorization,
-            'nonce'         => $nonce,
-            'timestamp'     => $timestamp,
-        ];
-	}
+            return [
+                'Authorization' => $authorization,
+                'nonce' => $nonce,
+                'timestamp' => $timestamp,
+            ];
+        } catch (JsonException $exception) {
+            throw new PaymentInvalidRequestException($exception->getMessage());
+        } catch (Exception $exception) {
+            throw new PaymentAuthorizationException($exception->getMessage());
+        }
+    }
 
     /**
      * @param mixed $data
+     *
+     * @throws PaymentAuthorizationException
+     * @throws PaymentInvalidRequestException
+     * @throws PaymentInvalidResponseException
      *
      * @return Response
      */
     public function sendData($data)
     {
-        $data = json_encode($data, JSON_FORCE_OBJECT);
+        try {
+            $data = json_encode($data, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
+
+        } catch (JsonException $exception) {
+            throw new PaymentInvalidRequestException($exception->getMessage());
+        }
         $endpoint = $this->getEndpoint();
-        $headers  = $this->getHeaders();
+        $headers = $this->getHeaders();
 
         // add HMAC auth data
         $headers = array_merge($headers, $this->getAuthorizationHeaders());
 
-        $client = $this->httpClient->post($endpoint, $headers);
-        $client->setBody($data, $headers['Content-Type']);
-        $client->getCurlOptions()->set(CURLOPT_PORT, 443);
-        $client->getCurlOptions()->set(CURLOPT_SSLVERSION, 6);
-        $client->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, 10);
-        // file_put_contents("http_data/request_$this->transaction_type", $client);
-
         try {
-            $httpResponse = $client->send();
-            // file_put_contents("http_data/response_$this->transaction_type", $httpResponse);
-            return $this->createResponse($httpResponse->getBody());
-
-        } catch (\Exception $e) {
-            // file_put_contents("http_data/error", $e->getMessage());
+            $response = $this->httpClient->request('POST', $endpoint, $headers, $data);
+            $body = $response->getBody()->getContents();
+            return $this->createResponse(json_decode($body, false, 512, JSON_THROW_ON_ERROR));
+        } catch (JsonException $e) {
+            throw new PaymentInvalidResponseException($e->getMessage());
+        } catch (Exception $e) {
             // if we have a response
-            if ($client->getResponse()) {
+            if ($contents = $response->getBody()->getContents()) {
                 // parse the error message
-                return $this->createResponse($client->getResponse()->getBody());
-            } else {
-                // otherwise just throw up the exception
-                throw $e;
+                return $this->createResponse($contents);
             }
+            // otherwise just throw up the exception
+            throw new PaymentInvalidResponseException($e->getMessage());
         }
     }
 
@@ -201,7 +219,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function getPaymentMethod()
     {
         $method = parent::getPaymentMethod();
-        return $method == 'card' ? 'credit_card' : $method;
+        return $method === 'card' ? 'credit_card' : $method;
     }
 
 }
