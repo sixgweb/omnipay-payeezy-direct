@@ -1,7 +1,9 @@
 <?php
+
 /**
  * First Data Payeezy Gateway
  */
+
 namespace Omnipay\PayeezyDirect;
 
 use Omnipay\Common\AbstractGateway;
